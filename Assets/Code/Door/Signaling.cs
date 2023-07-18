@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace Code.Door
@@ -11,53 +12,41 @@ namespace Code.Door
         [SerializeField] private float _maxVolumeSound;
 
         private float _time;
-        private bool isActivateDefendHome = false;
+        private bool _isActivateDefendHome = false;
+
+        public void RaiseVolume()
+        {
+            _isActivateDefendHome = true;
+            _audioSource.Play();
+            StartCoroutine(FadeIn( _maxVolumeSound));
+        }
+
+        public void LowerVolume()
+        {
+           StartCoroutine(FadeIn( 0f));
+        }
 
         private void Start()
         {
             _audioSource.volume = 0f;
         }
 
-        private void Update()
+        private IEnumerator FadeIn(float targetValueSound)
         {
-            if (isActivateDefendHome)
+            WaitForSeconds waitForSecond = new WaitForSeconds(SoundTimer);
+            
+            while (_audioSource.volume != targetValueSound)
             {
-                SettingVolumeAudio(_audioSource.volume, _maxVolumeSound);
+                _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, targetValueSound, _soundRiseRate * Time.deltaTime);
+                yield return waitForSecond;
             }
 
-            if (isActivateDefendHome == false && _audioSource.volume > 0f)
+            if (_isActivateDefendHome && _audioSource.volume == 0f)
             {
-                SettingVolumeAudio(_audioSource.volume, 0f);
-            }
-
-            if (isActivateDefendHome == false && _audioSource.volume == 0f)
-            {
+                _isActivateDefendHome = false;
                 _audioSource.Stop();
             }
         }
-
-        private void SettingVolumeAudio(float currentVolumeSound, float targetVolumeSound)
-        {
-            if (_time >= SoundTimer)
-            {
-                _time = 0;
-                _audioSource.volume = Mathf.MoveTowards(currentVolumeSound, targetVolumeSound, _soundRiseRate * Time.deltaTime);
-            }
-            else
-            {
-                _time += Time.deltaTime;
-            }
-        }
-
-        private void OnCollisionEnter2D(Collision2D col)
-        {
-            isActivateDefendHome = true;
-            _audioSource.Play();
-        }
-
-        private void OnCollisionExit2D(Collision2D col)
-        {
-            isActivateDefendHome = false;
-        }
+        
     }
 }
