@@ -5,7 +5,7 @@ namespace Code.Door
 {
     public class Signaling : MonoBehaviour
     {
-        private const float SoundTimer = 0.25f;
+        private const float SoundTimer = 0.20f;
 
         [SerializeField] private AudioSource _audioSource;
         [SerializeField] private float _soundRiseRate;
