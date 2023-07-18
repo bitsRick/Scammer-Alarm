@@ -27,8 +27,9 @@ namespace Code.Slime
                 _transformsPosition[_currentIndexTransformArray].position,
                 _speed * Time.deltaTime);
 
-            if (Vector2.Distance(_transformsPosition[_currentIndexTransformArray].position, transform.position) <
-                MinimumDistancePosition)
+            if (Vector2.Distance(
+                    _transformsPosition[_currentIndexTransformArray].position, 
+                    transform.position) < MinimumDistancePosition)
             {
                 if (_time >= TimerStay)
                 {

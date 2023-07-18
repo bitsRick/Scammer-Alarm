@@ -6,6 +6,7 @@ namespace Code.Door
     public class Signaling : MonoBehaviour
     {
         private const float SoundTimer = 0.20f;
+        private const float MinimumSoundValue = 0f;
 
         [SerializeField] private AudioSource _audioSource;
         [SerializeField] private float _soundRiseRate;
@@ -23,12 +24,12 @@ namespace Code.Door
 
         public void LowerVolume()
         {
-           StartCoroutine(FadeIn( 0f));
+           StartCoroutine(FadeIn(MinimumSoundValue));
         }
 
         private void Start()
         {
-            _audioSource.volume = 0f;
+            _audioSource.volume = MinimumSoundValue;
         }
 
         private IEnumerator FadeIn(float targetValueSound)
@@ -37,11 +38,13 @@ namespace Code.Door
             
             while (_audioSource.volume != targetValueSound)
             {
-                _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, targetValueSound, _soundRiseRate * Time.deltaTime);
+                _audioSource.volume = Mathf.MoveTowards(
+                    _audioSource.volume, targetValueSound, _soundRiseRate * Time.deltaTime);
+                
                 yield return waitForSecond;
             }
 
-            if (_isActivateDefendHome && _audioSource.volume == 0f)
+            if (_isActivateDefendHome && _audioSource.volume == MinimumSoundValue)
             {
                 _isActivateDefendHome = false;
                 _audioSource.Stop();
